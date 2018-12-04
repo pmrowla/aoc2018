@@ -49,7 +49,7 @@ def wake(m, timestamp, state):
 
 
 def handle_events(events):
-    '''Return a dict mapping guard IDs to a 60-tuple where each element
+    '''Return a dict mapping guard IDs to a list w/len 60 where each element
     corresponds to total minutes slept at that minute (00-59).
     '''
     state = {
