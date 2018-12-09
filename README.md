@@ -20,7 +20,7 @@ $ python3 day1.py -
 
 ### Requirements
 
-- \[day 8\] [blist](http://stutzbachenterprises.com/blist/)
+- \[day 9\] [blist](http://stutzbachenterprises.com/blist/)
 
 To install everything:
 ```
