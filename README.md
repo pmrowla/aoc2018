@@ -17,3 +17,12 @@ $ python3 day1.py -
 3
 <Ctrl+D>
 ```
+
+### Requirements
+
+- \[day 8\] [blist](http://stutzbachenterprises.com/blist/)
+
+To install everything:
+```
+$ pip install -r requirements.txt
+```
