@@ -22,6 +22,10 @@ $ python3 day1.py -
 
 - \[day 9\] [blist](http://stutzbachenterprises.com/blist/)
 
+### Optional
+
+- [tqdm](https://github.com/tqdm/tqdm) - if tqdm is available, slow solutions will provide a progress bar on the terminal.
+
 To install everything:
 ```
 $ pip install -r requirements.txt
