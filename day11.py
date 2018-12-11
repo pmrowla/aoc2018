@@ -19,41 +19,23 @@ def power_level(x, y, serial_number):
     return ((rack_id * y + serial_number) * rack_id) // 100 % 10 - 5
 
 
-def square_power(x, y, grid, size=3):
-    '''Return total power of the specified sized square w/top-left at (x,y).'''
-    if x + size > len(grid) or y + size > len(grid):
-        raise ValueError
-    return sum([n for row in grid[y:y + size] for n in row[x:x + size]])
+def area(x, y, grid, size):
+    '''Return the area of the given square.'''
+    return grid[y + size][x + size] + grid[y][x] - grid[y][x + size] - grid[y + size][x]
 
 
-def column_power(x, y, grid, size):
-    if x > len(grid) or y + size > len(grid):
-        raise ValueError('{},{},{}'.format(x, y, size))
-    return sum([row[x] for row in grid[y:y + size]])
-
-
-def row_power(x, y, grid, size):
-    if x + size > len(grid) or y > len(grid):
-        raise ValueError('{},{},{}'.format(x, y, size))
-    return sum(grid[y][x:x + size])
-
-
-def part_one(grid):
+def max_square(grid, size):
+    '''Return the maximum power square of specified size.'''
     max_power = None
     max_x = None
     max_y = None
-    for y in range(len(grid) - 3):
-        for x in range(len(grid) - 3):
-            if max_power is None:
-                max_power = square_power(x, y, grid)
+    for y in range(len(grid) - size):
+        for x in range(len(grid) - size):
+            p = area(x, y, grid, size)
+            if max_power is None or p > max_power:
+                max_power = p
                 max_x = x + 1
                 max_y = y + 1
-            else:
-                p = square_power(x, y, grid)
-                if p > max_power:
-                    max_power = p
-                    max_x = x + 1
-                    max_y = y + 1
     return max_x, max_y, max_power
 
 
@@ -63,59 +45,37 @@ def part_two(grid, p1_x, p1_y, p1_power):
     max_y = p1_y
     max_size = 3
     if _has_tqdm:
-        r = tqdm(range(1, 301))
+        r = tqdm(range(2, 301))
     else:
-        r = range(1, 301)
+        r = range(2, 301)
     for size in r:
         if size == 3:
             continue
-        cur_power = square_power(0, 0, grid, size)
-        # calculating every square is slow, so as we shift our box to the next
-        # point just subtract the old column/row and add the new one to
-        # our current total instead of recalculating the entire square.
-        #
-        # Note: this is still kind of slow? ~2 min on my machine for my input
-        for y in range(len(grid) - size):
-            for x in range(len(grid) - size):
-                if x == 0:
-                    if y == 0:
-                        cur_power = square_power(0, 0, grid, size)
-                        if cur_power > max_power:
-                            max_power = cur_power
-                            max_x = x + 1
-                            max_y = y + 1
-                            max_size = size
-                    row_sav = cur_power
-                else:
-                    if cur_power > max_power:
-                        max_power = cur_power
-                        max_x = x + 1
-                        max_y = y + 1
-                        max_size = size
-                if x + size < len(grid):
-                    cur_power -= column_power(x, y, grid, size)
-                    cur_power += column_power(x + size, y, grid, size)
-            if y + size < len(grid):
-                cur_power = row_sav
-                cur_power -= row_power(0, y, grid, size)
-                cur_power += row_power(0, y + size, grid, size)
-                if cur_power > max_power:
-                    max_power = cur_power
-                    max_x = x + 1
-                    max_y = y + 1
-                    max_size = size
+        x, y, power = max_square(grid, size)
+        if power > max_power:
+            max_power = power
+            max_x = x
+            max_y = y
+            max_size = size
     return max_x, max_y, max_size
-
 
 
 def process(serial_number):
     grid = []
-    for y in range(1, 301):
+    for y in range(301):
         row = []
-        for x in range(1, 301):
-            row.append(power_level(x, y, serial_number))
+        for x in range(301):
+            # generate grid as summed area table
+            p = power_level(x, y, serial_number)
+            if y > 0:
+                p += grid[y - 1][x]
+                if x > 0:
+                    p -= grid[y - 1][x - 1]
+            if x > 0:
+                p += row[x - 1]
+            row.append(p)
         grid.append(row)
-    p1_x, p1_y, p1_power = part_one(grid)
+    p1_x, p1_y, p1_power = max_square(grid, 3)
     p2_x, p2_y, p2_size = part_two(grid, p1_x, p1_y, p1_power)
     print('Part one: {},{}'.format(p1_x, p1_y))
     print('Part two: {},{},{}'.format(p2_x, p2_y, p2_size))
