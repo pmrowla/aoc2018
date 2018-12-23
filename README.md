@@ -21,10 +21,11 @@ $ python3 day1.py -
 ### Requirements
 
 - \[day 9\] [blist](http://stutzbachenterprises.com/blist/)
+- \[day 23] [z3](https://github.com/Z3Prover/z3) (pip package is `z3-solver`)
 
 ### Optional
 
-- [tqdm](https://github.com/tqdm/tqdm) - if tqdm is available, slow solutions will provide a progress bar on the terminal.
+- [tqdm](https://github.com/tqdm/tqdm) - if tqdm is available, certain slow solutions will provide a progress bar on the terminal.
 
 To install everything:
 ```

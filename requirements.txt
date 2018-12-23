@@ -1,2 +1,3 @@
 blist
 tqdm
+z3-solver
